@@ -10,21 +10,21 @@ import {getUserObj$$} from './observables'
 
 /* --- IMPURE --------------------------------------------------------------- */
 
-// getLock :: {*} -> {*} (IMPURE)
+// getLock :: {*} -> {*}
 export const getLock = lockOptions => {
   const lock = new Auth0Lock('u4wI4sQ5wmwjqONJunkb7GHRQy9L0tih', AUTH0_URL, lockOptions)
   return lock
 }
 
-export const setLockProfile = (lock, idToken) => {
-  if (!global.localStorage.getItem('profile')) {
-    lock.getProfile(idToken, (err, profile) => {
-      if (err) { return }
-      global.localStorage.setItem('profile', JSON.stringify(profile))
-    })
-  }
+// getLockProfile :: {*} -> String -> {*}
+export const getLockProfile = (lock, idToken) => {
+  lock.getProfile(idToken, (err, profile) => {
+    if (err) { return }
+    return profile
+  })
 }
 
+// getIdToken :: () -> String (IMPURE)
 export const getIdToken = () => global.localStorage.getItem('id_token')
 
 // loggedIn :: () -> Boolean (IMPURE)
@@ -42,8 +42,6 @@ export const loggedIn = () => {
   }
 
   return true
-
-  return !idToken ? false : true
 }
 
 // requireAuth :: {*} -> ({*} -> IMPURE) -> IMPURE
